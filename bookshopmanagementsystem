@@ -1,0 +1,536 @@
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+class Book {
+    private final int id;
+    private String name;
+    private String authorName;
+    private String publisherName;
+    private float price;
+    private int quantity;
+    private String category;
+
+    public Book(int id, String name, String authorName, String publisherName, float price, int quantity, String category) {
+        this.id = id;
+        this.name = name;
+        this.authorName = authorName;
+        this.publisherName = publisherName;
+        this.price = price;
+        this.quantity = quantity;
+        this.category = category;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public String getPublisherName() {
+        return publisherName;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+    public void setPublisherName(String publisherName) {
+        this.publisherName = publisherName;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "Book ID: " + id + "\nBook Name: " + name + "\nAuthor Name: " + authorName + "\nPublisher Name: " + publisherName + "\nBook Price: " + price + "\nQuantity: " + quantity + "\nCategory: " + category + "\n--------------------------";
+    }
+}
+
+abstract class User {
+    private String username;
+    private int password;
+
+    public User(String username, int password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public int getPassword() {
+        return password;
+    }
+
+    public void displayMenu() {
+    }
+
+    public boolean handleActions(int choice, Scanner scanner, BookShop bookShop) {
+        return false;
+    }
+}
+
+class Admin extends User {
+    private BookShop bookShop;
+
+    public Admin(String username, int password, BookShop bookShop) {
+        super(username, password);
+        this.bookShop = bookShop;
+    }
+
+    @Override
+    public void displayMenu() {
+        System.out.println("\n\n\t\t\t\t\tAdmin Main menu");
+        System.out.println("\n1. Insert Book");
+        System.out.println("2. Search Book");
+        System.out.println("3. Update Book");
+        System.out.println("4. Delete Book");
+        System.out.println("5. Show All Books");
+        System.out.println("6. Logout");
+        System.out.print("\nEnter your choice: ");
+    }
+
+    @Override
+    public boolean handleActions(int choice, Scanner scanner, BookShop bookShop) {
+        switch (choice) {
+            case 1:
+                insertBook(scanner);
+                break;
+            case 2:
+                searchBook(scanner);
+                break;
+            case 3:
+                updateBook(scanner);
+                break;
+            case 4:
+                deleteBook(scanner);
+                break;
+            case 5:
+                showAllBooks();
+                break;
+            case 6:
+                System.out.println("Logging out...");
+                return true; // Logout
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
+        return false; // Stay in the admin menu
+    }
+
+    public void insertBook(Scanner scanner) {
+        try {
+            System.out.print("\n\n\t\t\t\t\tInserting Book");
+            System.out.print("\nEnter book ID: ");
+            int id = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            System.out.print("Enter book name: ");
+            String name = scanner.nextLine();
+            System.out.print("Enter author name: ");
+            String authorName = scanner.nextLine();
+            System.out.print("Enter publisher name: ");
+            String publisherName = scanner.nextLine();
+            System.out.print("Enter book price: ");
+            float price = scanner.nextFloat();
+            System.out.print("Enter quantity: ");
+            int quantity = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            System.out.print("Enter book category: ");
+            String category = scanner.nextLine();
+
+            Book book = new Book(id, name, authorName, publisherName, price, quantity, category);
+            bookShop.addBook(book);
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter the correct data.");
+            scanner.nextLine(); // clear the invalid input
+        }
+    }
+
+    public void searchBook(Scanner scanner) {
+        try {
+            System.out.print("\n\n\t\t\t\t\tSearch Book");
+            System.out.print("\nEnter book ID to search: ");
+            int id = scanner.nextInt();
+            bookShop.searchBook(id);
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid book ID.");
+            scanner.nextLine(); // clear the invalid input
+        }
+    }
+
+    public void updateBook(Scanner scanner) {
+        try {
+            System.out.print("\n\n\t\t\t\t\tUpdating Book");
+            System.out.print("\nEnter book ID to update: ");
+            int id = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            System.out.print("Enter new book name: ");
+            String name = scanner.nextLine();
+            System.out.print("Enter new author name: ");
+            String authorName = scanner.nextLine();
+            System.out.print("Enter new publisher name: ");
+            String publisherName = scanner.nextLine();
+            System.out.print("Enter new book price: ");
+            float price = scanner.nextFloat();
+            System.out.print("Enter new quantity: ");
+            int quantity = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            System.out.print("Enter new book category: ");
+            String category = scanner.nextLine();
+
+            bookShop.updateBook(id, name, authorName, publisherName, price, quantity, category);
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter the correct data.");
+            scanner.nextLine(); // clear the invalid input
+        }
+    }
+
+    public void deleteBook(Scanner scanner) {
+        try {
+            System.out.print("\n\n\t\t\t\t\tDeleting Book");
+            System.out.print("\nEnter book ID to delete: ");
+            int id = scanner.nextInt();
+            bookShop.deleteBook(id);
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid book ID.");
+            scanner.nextLine(); // clear the invalid input
+        }
+    }
+
+    public void showAllBooks() {
+        bookShop.showAllBooks();
+    }
+}
+
+class Customer extends User {
+    private List<Order> orders;
+
+    public Customer(String username, int password) {
+        super(username, password);
+        this.orders = new ArrayList<>();
+    }
+
+    @Override
+    public void displayMenu() {
+        System.out.println("\n\n\t\t\t\t\tCustomer Main menu");
+        System.out.println("\n1. View Books");
+        System.out.println("2. Place Order");
+        System.out.println("3. View Orders");
+        System.out.println("4. Logout");
+        System.out.print("\nEnter your choice: ");
+    }
+
+    @Override
+    public boolean handleActions(int choice, Scanner scanner, BookShop bookShop) {
+        switch (choice) {
+            case 1:
+                viewBooks(bookShop);
+                break;
+            case 2:
+                placeOrder(scanner, bookShop);
+                break;
+            case 3:
+                viewOrders();
+                break;
+            case 4:
+                System.out.println("Logging out...");
+                return true; // Logout
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
+        return false; // Stay in the customer menu
+    }
+
+    public void viewBooks(BookShop bookShop) {
+        bookShop.showAllBooks();
+    }
+
+    public void placeOrder(Scanner scanner, BookShop bookShop) {
+        try {
+            System.out.println("\n\n\t\t\t\t\tPlace order");
+            System.out.print("\nEnter book ID to order: ");
+            int bookId = scanner.nextInt();
+            System.out.print("Enter quantity: ");
+            int quantity = scanner.nextInt();
+            Book book = bookShop.findBookById(bookId);
+            if (book != null) {
+                if (book.getQuantity() >= quantity) {
+                    orders.add(new Order(this, book, quantity));
+                    bookShop.updateBookQuantity(bookId, -quantity); // Reduce the quantity of the book
+                    System.out.println("Order placed successfully.");
+                } else {
+                    System.out.println("Not enough quantity available.");
+                }
+            } else {
+                System.out.println("Book ID not found.");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter valid data.");
+            scanner.nextLine(); // clear the invalid input
+        }
+    }
+
+    public void viewOrders() {
+        if (orders.isEmpty()) {
+            System.out.println("No orders placed.");
+        } else {
+            System.out.println("\n\n\t\t\t\t\tAll orders");
+            for (Order order : orders) {
+                System.out.println(order);
+            }
+        }
+    }
+}
+
+class Order {
+    private static int nextOrderId = 1;
+    private int orderId;
+    private Customer customer;
+    private Book book;
+    private int quantity;
+
+    public Order(Customer customer, Book book, int quantity) {
+        this.orderId = nextOrderId++;
+        this.customer = customer;
+        this.book = book;
+        this.quantity = quantity;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Order ID: " + orderId + "\nCustomer: " + customer.getUsername() + "\nBook: " + book.getName() + "\nQuantity: " + quantity + "\n--------------------------";
+    }
+}
+
+class BookShop {
+    private List<Book> books;
+
+    public BookShop() {
+        books = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        books.add(book);
+        System.out.println("Book added successfully.");
+    }
+
+    public void searchBook(int id) {
+        Book book = findBookById(id);
+        if (book != null) {
+            System.out.println(book);
+        } else {
+            System.out.println("Book ID not found.");
+        }
+    }
+
+    public void updateBook(int id, String name, String authorName, String publisherName, float price, int quantity, String category) {
+        Book book = findBookById(id);
+        if (book != null) {
+            book.setName(name);
+            book.setAuthorName(authorName);
+            book.setPublisherName(publisherName);
+            book.setPrice(price);
+            book.setQuantity(quantity);
+            book.setCategory(category);
+            System.out.println("Book updated successfully.");
+        } else {
+            System.out.println("Book ID not found.");
+        }
+    }
+
+    public void updateBookQuantity(int id, int quantityChange) {
+        Book book = findBookById(id);
+        if (book != null) {
+            book.setQuantity(book.getQuantity() + quantityChange);
+        }
+    }
+
+    public void deleteBook(int id) {
+        Book book = findBookById(id);
+        if (book != null) {
+            books.remove(book);
+            System.out.println("Book deleted successfully.");
+        } else {
+            System.out.println("Book ID not found.");
+        }
+    }
+
+    public void showAllBooks() {
+        if (books.isEmpty()) {
+            System.out.println("No books available.");
+        } else {
+            System.out.println("\n\n\t\t\t\t\t\tAll Books");
+            for (Book book : books) {
+                System.out.println(book);
+            }
+        }
+    }
+
+    public Book findBookById(int id) {
+        for (Book book : books) {
+            if (book.getId() == id) {
+                return book;
+            }
+        }
+        return null;
+    }
+
+    public boolean removeBookById(int id) {
+        Book book = findBookById(id);
+        if (book != null) {
+            books.remove(book);
+            return true;
+        }
+        return false;
+    }
+}
+
+public class BookShopManagementSystem {
+    private static Scanner scanner = new Scanner(System.in);
+    private static BookShop bookShop = new BookShop();
+    private static User admin = new Admin("admin", 1234, bookShop);
+    private static User customer = new Customer("customer", 5678);
+
+    private static User login() {
+        while (true) {
+            System.out.println("\t\t\t~~BOOK SHOP MANAGEMENT SYSTEM");
+            System.out.println("1. Admin");
+            System.out.println("2. Customer");
+            System.out.println("3. Exit\n");
+            System.out.print("Enter your choice: ");
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // consume newline
+
+                switch (choice) {
+                    case 1:
+                        return adminLogin();
+                    case 2:
+                        return customerLogin();
+                    case 3:
+                        System.out.print("\n\n\t\t\t\t\tExiting the system. Goodbye!");
+                        for (int i = 0; i < 5; i++) {
+                            System.out.print(".");
+                            try {
+                                Thread.sleep(1500);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                System.out.println("Loading interrupted");
+                            }
+                        }
+                        return null;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // clear the invalid input
+            }
+        }
+    }
+
+    private static User adminLogin() {
+        System.out.print("\nUsername: ");
+        String username = scanner.next();
+        System.out.print("Password: ");
+        int password = scanner.nextInt();
+
+        if (username.equals(admin.getUsername()) && password == admin.getPassword()) {
+            return admin;
+        } else {
+            System.out.println("Invalid username or password. Please try again.");
+            return null;
+        }
+    }
+
+    private static User customerLogin() {
+        System.out.print("\nUsername: ");
+        String username = scanner.next();
+        System.out.print("Password: ");
+        int password = scanner.nextInt();
+
+        if (username.equals(customer.getUsername()) && password == customer.getPassword()) {
+            return customer;
+        } else {
+            System.out.println("Invalid username or password. Please try again.");
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        User currentUser = null;
+        boolean exit = false;
+
+        while (!exit) {
+            currentUser = login();
+            if (currentUser == null) {
+                exit = true; 
+            } else {
+                boolean logout = false;
+                while (!logout) {
+                    currentUser.displayMenu();
+                    try {
+                        int choice = scanner.nextInt();
+                        if (currentUser.handleActions(choice, scanner, bookShop)) {
+                            logout = true; 
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter a valid choice.");
+                        scanner.next(); 
+                    }
+                }
+            }
+        }
+        scanner.close();
+    }
+}
